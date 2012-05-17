@@ -28,6 +28,7 @@ module.exports = exports = (options = {}) ->
   options.buildsExpire ?= false
   options.detectChanges ?= true
   options.minifyBuilds ?= true
+  options.cacheBuilds ?= true
   options.pathsOnly ?= false
   jsCompilers = _.extend jsCompilers, options.jsCompilers || {}
 
@@ -215,7 +216,7 @@ class ConnectAssets
           filename = null
           callback = (err, concatenation, changed) =>
             throw err if err
-            if changed
+            if changed or !@options.cacheBuilds
               filename = @options.buildFilenamer route, concatenation
               @buildFilenames[sourcePath] = filename
               cacheFlags = expires: @options.buildsExpire
